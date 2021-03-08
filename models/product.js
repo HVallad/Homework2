@@ -2,7 +2,7 @@ const Mongoose = require('mongoose');
 
 require('bob-mongoose-currency').loadType(Mongoose);
 
-module.exports = Mongoose.model('Product', new Mongoose.Schema({
+const ProductSchema = new Mongoose.Schema({
   sku: { type: Number, required: true, unique: true },
   name: { type: String, required: true },
   quantity: { type: Number, default: 0 },
@@ -17,4 +17,6 @@ module.exports = Mongoose.model('Product', new Mongoose.Schema({
     getters: true,
     virtuals: false,
   },
-}));
+});
+
+module.exports = Mongoose.model('Product', ProductSchema);

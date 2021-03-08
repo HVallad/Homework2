@@ -8,9 +8,9 @@ exports.getUsers = async (query) => {
   }
 };
 
-exports.getUserBySSN = async (param) => {
+exports.getUserBySSN = async (SSN) => {
   try {
-    return await User.findOne({SSN: param.SSN}).select('-_id -__v');
+    return await User.findOne(SSN).select('-_id -__v');
   } catch (e) {
     throw Error('Error while grabbing users.');
   }
@@ -30,14 +30,30 @@ exports.deleteUsers = async (query) => {
   } catch (e) {
     throw Error('Error while deleting users.');
   }
-}
+};
 
-exports.deleteUserBySSN = async (params) => {
+exports.deleteUserBySSN = async (SSN) => {
   try {
-    return await User.deleteOne({SSN: params.SSN});
+    return await User.deleteOne(SSN);
   } catch (e) {
     throw Error('Error while deleting user.');
   }
-}
+};
+
+exports.putUserbySSN = async (SSN, user) => {
+  try {
+    return await User.findOneAndReplace(SSN, user, { upsert: true, });
+  } catch (e) {
+    throw Error('Error while replacing user information.');
+  }
+};
+
+exports.patchUserBySSN = async (SSN, user) => {
+  try {
+    return await User.findOneAndUpdate(SSN, user, { new: true,}).select('-_id -__v');
+  } catch (e) {
+    throw Error('Error while updating user information')
+  }
+};
 
 

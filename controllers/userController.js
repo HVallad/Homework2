@@ -17,7 +17,7 @@ exports.getUsers = async (req, res) => {
   await doActionThatMightFailValidation (req, res, async () => {
       const users = await UserService.getUsers(req.query);
   
-      if ( users === null || users.length === 0) {
+      if (users?.length === 0 || users === null) {
         return res.status(404).json({ status: 404, message: 'Users not found.' });
       }
   
@@ -27,9 +27,10 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserBySSN = async (req, res) => {
   await doActionThatMightFailValidation (req, res, async () => {
-      const users = await UserService.getUserBySSN(req.params);
+      const {SSN} = req.params;
+      const users = await UserService.getUserBySSN({SSN: SSN});
   
-      if (users === null || users.length === 0) {
+      if (users?.length === 0 || users === null) {
         return res.status(404).json({ status: 404, message: 'User not found.' });
       }
   
@@ -37,9 +38,10 @@ exports.getUserBySSN = async (req, res) => {
   });
 };
 
+// Check to see if potential 409 error
 exports.postUser = async (req, res) => {
   await doActionThatMightFailValidation (req, res, async () => {
-    const user = await UserService.postUser(req.query);
+    const user = await UserService.postUser(req.body);
     return res.status(201).json({ status: 201, data: user, message: 'Successfully Created User' });
   });
 };
@@ -47,8 +49,8 @@ exports.postUser = async (req, res) => {
 exports.deleteUsers = async(req, res) => {
   await doActionThatMightFailValidation(req, res, async () => {
     const result = await UserService.deleteUsers(req.query);
-    if (results !== null && result.deleteCount > 0) {
-        return res.status(200).json({status: 200, data: result,message:'Successfully Deleted Users'});
+    if (result?.deleteCount > 0) {
+        return res.status(200).json({status: 200, data: result, message:'Successfully Deleted Users'});
     }
     else {
       return res.status(404).json({ status: 404, message: 'User not found.' });
@@ -56,11 +58,42 @@ exports.deleteUsers = async(req, res) => {
   });
 }
 
-exports.deleteUsers = async(req, res) => {
+exports.deleteUserBySSN = async(req, res) => {
   await doActionThatMightFailValidation(req, res, async () => {
-    const result = await UserService.deleteUserBySSN(req.params);
-    if (results !== null && result.deleteCount > 0) {
-        return res.status(200).json({status: 200, data: result,message:'Successfully Deleted Users'});
+    const {SSN} = req.params;
+    const result = await UserService.deleteUserBySSN({SSN: SSN});
+    if (result?.deleteCount > 0) {
+        return res.status(200).json({status: 200, data: result, message:'Successfully Deleted User'});
+    }
+    else {
+      return res.status(404).json({ status: 404, message: 'User not found.' });
+    }
+  });
+}
+
+exports.putUserBySSN = async(req, res) => {
+  await doActionThatMightFailValidation(req, res, async () => {
+    const {SSN} = req.params;
+    const user = req.body;
+    user.SSN = SSN;
+    const result = await UserService.putUserbySSN({SSN: user.SSN}, user);
+    if (result?.deleteCount > 0) {
+        return res.status(200).json({status: 200, data: result, message:'Successfully Replaced User'});
+    }
+    else {
+      return res.status(404).json({ status: 404, message: 'User not found.' });
+    }
+  });
+}
+
+exports.patchUserBySSN = async(req, res) => {
+  await doActionThatMightFailValidation(req, res, async () => {
+    const {SSN} = req.params;
+    const user = req.body;
+    delete user.SSN;
+    const result = await UserService.patchUserBySSN({SSN: SSN}, user);
+    if (result?.deleteCount > 0) {
+        return res.status(200).json({status: 200, data: result, message:'Successfully Updated User'});
     }
     else {
       return res.status(404).json({ status: 404, message: 'User not found.' });

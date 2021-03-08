@@ -47,7 +47,7 @@ exports.postUser = async (req, res) => {
 exports.deleteUsers = async(req, res) => {
   await doActionThatMightFailValidation(req, res, async () => {
     const result = await UserService.deleteUsers(req.query);
-    if (result?.deleteCount > 0) {
+    if (results !== null && result.deleteCount > 0) {
         return res.status(200).json({status: 200, data: result,message:'Successfully Deleted Users'});
     }
     else {
@@ -59,7 +59,7 @@ exports.deleteUsers = async(req, res) => {
 exports.deleteUsers = async(req, res) => {
   await doActionThatMightFailValidation(req, res, async () => {
     const result = await UserService.deleteUserBySSN(req.params);
-    if (result?.deleteCount > 0) {
+    if (results !== null && result.deleteCount > 0) {
         return res.status(200).json({status: 200, data: result,message:'Successfully Deleted Users'});
     }
     else {

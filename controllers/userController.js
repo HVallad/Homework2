@@ -17,7 +17,7 @@ exports.getUsers = async (req, res) => {
   await doActionThatMightFailValidation (req, res, async () => {
       const users = await UserService.getUsers(req.query);
   
-      if (users?.length === 0) {
+      if ( users === null || users.length === 0) {
         return res.status(404).json({ status: 404, message: 'Users not found.' });
       }
   
@@ -29,7 +29,7 @@ exports.getUserBySSN = async (req, res) => {
   await doActionThatMightFailValidation (req, res, async () => {
       const users = await UserService.getUserBySSN(req.params);
   
-      if (users?.length === 0 || users === null) {
+      if (users === null || users.length === 0) {
         return res.status(404).json({ status: 404, message: 'User not found.' });
       }
   

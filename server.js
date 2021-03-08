@@ -20,5 +20,5 @@ App.use('/Users', UserRouter);
     useFindAndModify: false,
     useCreateIndex: true,
   });
-  App.listen(25565);
+  App.listen(8080);
 })();
